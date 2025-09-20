@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Calendar, User, Star } from 'lucide-react';
-import type { ExaSearchResult } from '@/types/exa';
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ExternalLink, Calendar, User, Star } from "lucide-react";
+import type { ExaSearchResult } from "@/types/exa";
 
 interface ResultCardProps {
   result: ExaSearchResult;
@@ -11,10 +11,10 @@ export function ResultCard({ result }: ResultCardProps) {
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
       });
     } catch {
       return null;
@@ -23,11 +23,6 @@ export function ResultCard({ result }: ResultCardProps) {
 
   const formatScore = (score: number) => {
     return (score * 100).toFixed(1);
-  };
-
-  const truncateText = (text: string, maxLength: number = 300) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
   };
 
   const getDomain = (url: string) => {
@@ -53,7 +48,7 @@ export function ResultCard({ result }: ResultCardProps) {
                 {result.title}
               </a>
             </h3>
-            
+
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
               <span className="font-medium">{getDomain(result.url)}</span>
               <ExternalLink className="h-3 w-3" />
@@ -66,14 +61,14 @@ export function ResultCard({ result }: ResultCardProps) {
                   <span>{formatDate(result.publishedDate)}</span>
                 </div>
               )}
-              
+
               {result.author && (
                 <div className="flex items-center gap-1">
                   <User className="h-3 w-3" />
                   <span>{result.author}</span>
                 </div>
               )}
-              
+
               <div className="flex items-center gap-1">
                 <Star className="h-3 w-3" />
                 <span>{formatScore(result.score)}%</span>
@@ -88,8 +83,8 @@ export function ResultCard({ result }: ResultCardProps) {
                 alt={result.title}
                 className="w-24 h-24 object-cover rounded-lg border border-border shadow-sm"
                 onError={(e) => {
-                  console.log('Image failed to load:', result.image);
-                  e.currentTarget.style.display = 'none';
+                  console.log("Image failed to load:", result.image);
+                  e.currentTarget.style.display = "none";
                 }}
                 loading="lazy"
               />
@@ -103,12 +98,11 @@ export function ResultCard({ result }: ResultCardProps) {
       </CardHeader>
 
       <CardContent className="pt-0">
-
         <div className="flex items-center justify-between mt-4">
           <Badge variant="outline" className="text-xs">
             Score: {formatScore(result.score)}%
           </Badge>
-          
+
           <a
             href={result.url}
             target="_blank"

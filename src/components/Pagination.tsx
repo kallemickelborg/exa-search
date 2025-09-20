@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, ChevronsLeft } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, ChevronsLeft } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -8,10 +8,14 @@ interface PaginationProps {
   disabled?: boolean;
 }
 
-export function Pagination({ currentPage, hasNextPage, onPageChange, disabled = false }: PaginationProps) {
+export function Pagination({
+  currentPage,
+  hasNextPage,
+  onPageChange,
+  disabled = false,
+}: PaginationProps) {
   const getVisiblePages = () => {
     const pages = [];
-    const maxVisible = 5;
 
     // Always show first page
     if (currentPage > 1) {
@@ -20,7 +24,7 @@ export function Pagination({ currentPage, hasNextPage, onPageChange, disabled = 
 
     // Add dots if there's a gap
     if (currentPage > 3) {
-      pages.push('...');
+      pages.push("...");
     }
 
     // Add pages around current page
@@ -70,8 +74,8 @@ export function Pagination({ currentPage, hasNextPage, onPageChange, disabled = 
           key={index}
           variant={page === currentPage ? "default" : "outline"}
           size="sm"
-          onClick={() => typeof page === 'number' && onPageChange(page)}
-          disabled={disabled || typeof page !== 'number'}
+          onClick={() => typeof page === "number" && onPageChange(page)}
+          disabled={disabled || typeof page !== "number"}
           className="h-8 min-w-8 px-2"
         >
           {page}

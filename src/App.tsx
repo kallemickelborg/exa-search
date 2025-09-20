@@ -18,8 +18,7 @@ import type {
   PaginatedSimilarParams,
 } from "@/types/exa";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Clock, DollarSign } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
