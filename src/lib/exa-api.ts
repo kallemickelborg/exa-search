@@ -6,25 +6,33 @@ import type {
   PaginatedSearchParams,
   PaginatedSimilarParams,
   PaginatedExaSearchResponse,
-  PaginatedExaSimilarResponse
-} from '@/types/exa';
+  PaginatedExaSimilarResponse,
+} from "@/types/exa";
 
-const EXA_API_BASE = 'https://api.exa.ai';
+const USE_DIRECT = import.meta.env.VITE_USE_DIRECT === "true";
+const EXA_API_BASE = "https://api.exa.ai";
+const PROXY_BASE = "/.netlify/functions/exa-proxy";
 const RESULTS_PER_PAGE = 10;
 const MAX_RESULTS_TO_FETCH = 30; // Fetch 30 results upfront for 3 pages of pagination
 
-// You'll need to set your API key as an environment variable
+// Log environment configuration for debugging
+console.log("Exa API Configuration:", {
+  USE_DIRECT,
+  hasApiKey: !!import.meta.env.VITE_EXA_API_KEY,
+  mode: USE_DIRECT ? "Direct API" : "Netlify Proxy",
+});
+
 const getApiKey = () => {
   const apiKey = import.meta.env.VITE_EXA_API_KEY;
-  if (!apiKey) {
-    throw new Error('EXA_API_KEY environment variable is not set');
+  if (!apiKey && USE_DIRECT) {
+    throw new Error("VITE_EXA_API_KEY not set for direct API access");
   }
   return apiKey;
 };
 
-export const searchExa = async (params: SearchParams): Promise<ExaSearchResponse> => {
-  const apiKey = getApiKey();
-  
+export const searchExa = async (
+  params: SearchParams
+): Promise<ExaSearchResponse> => {
   const requestBody = {
     query: params.query,
     numResults: params.numResults || 10,
@@ -35,36 +43,51 @@ export const searchExa = async (params: SearchParams): Promise<ExaSearchResponse
     startPublishedDate: params.startPublishedDate,
     endPublishedDate: params.endPublishedDate,
     useAutoprompt: params.useAutoprompt,
-    type: params.type || 'neural',
+    type: params.type || "neural",
     category: params.category,
-    contents: params.includeText ? {
-      text: {
-        maxCharacters: params.textLength || 1000,
-        includeHtmlTags: false
-      }
-    } : undefined
+    contents: params.includeText
+      ? {
+          text: {
+            maxCharacters: params.textLength || 1000,
+            includeHtmlTags: false,
+          },
+        }
+      : undefined,
   };
 
-  const response = await fetch(`${EXA_API_BASE}/search`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-    },
+  const url = USE_DIRECT
+    ? `${EXA_API_BASE}/search`
+    : `${PROXY_BASE}?path=search`;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (USE_DIRECT) {
+    const apiKey = getApiKey();
+    if (apiKey) {
+      headers["x-api-key"] = apiKey;
+    }
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
     body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Exa API error: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(
+      `Exa API error: ${response.status} ${response.statusText} - ${errorText}`
+    );
   }
 
   return response.json();
 };
 
-export const findSimilar = async (params: SimilarParams): Promise<ExaSimilarResponse> => {
-  const apiKey = getApiKey();
-
+export const findSimilar = async (
+  params: SimilarParams
+): Promise<ExaSimilarResponse> => {
   const requestBody = {
     url: params.url,
     numResults: params.numResults || 10,
@@ -77,18 +100,31 @@ export const findSimilar = async (params: SimilarParams): Promise<ExaSimilarResp
     category: params.category,
   };
 
-  const response = await fetch(`${EXA_API_BASE}/findSimilar`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-    },
+  const url = USE_DIRECT
+    ? `${EXA_API_BASE}/findSimilar`
+    : `${PROXY_BASE}?path=findSimilar`;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (USE_DIRECT) {
+    const apiKey = getApiKey();
+    if (apiKey) {
+      headers["x-api-key"] = apiKey;
+    }
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
     body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Exa API error: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(
+      `Exa API error: ${response.status} ${response.statusText} - ${errorText}`
+    );
   }
 
   return response.json();
@@ -98,13 +134,19 @@ export const findSimilar = async (params: SimilarParams): Promise<ExaSimilarResp
 const resultCache = new Map<string, ExaSearchResponse | ExaSimilarResponse>();
 
 // Generate cache key for search parameters
-const generateCacheKey = (params: PaginatedSearchParams | PaginatedSimilarParams, type: 'search' | 'similar'): string => {
+const generateCacheKey = (
+  params: PaginatedSearchParams | PaginatedSimilarParams,
+  type: "search" | "similar"
+): string => {
   return `${type}-${JSON.stringify(params)}`;
 };
 
 // Paginated search function
-export const searchExaPaginated = async (params: PaginatedSearchParams, page: number = 1): Promise<PaginatedExaSearchResponse> => {
-  const cacheKey = generateCacheKey(params, 'search');
+export const searchExaPaginated = async (
+  params: PaginatedSearchParams,
+  page: number = 1
+): Promise<PaginatedExaSearchResponse> => {
+  const cacheKey = generateCacheKey(params, "search");
 
   // Check if we have cached results
   let fullResults = resultCache.get(cacheKey) as ExaSearchResponse;
@@ -141,8 +183,11 @@ export const searchExaPaginated = async (params: PaginatedSearchParams, page: nu
 };
 
 // Paginated similar search function
-export const findSimilarPaginated = async (params: PaginatedSimilarParams, page: number = 1): Promise<PaginatedExaSimilarResponse> => {
-  const cacheKey = generateCacheKey(params, 'similar');
+export const findSimilarPaginated = async (
+  params: PaginatedSimilarParams,
+  page: number = 1
+): Promise<PaginatedExaSimilarResponse> => {
+  const cacheKey = generateCacheKey(params, "similar");
 
   // Check if we have cached results
   let fullResults = resultCache.get(cacheKey) as ExaSimilarResponse;
