@@ -3,7 +3,7 @@ import type {
   ExaSimilarResponse,
   SearchParams,
   SimilarParams,
-  PaginatedSearchParams,
+  PaginatedNeuralParams,
   PaginatedSimilarParams,
   PaginatedExaSearchResponse,
   PaginatedExaSimilarResponse,
@@ -151,7 +151,7 @@ const resultCache = new Map<string, ExaSearchResponse | ExaSimilarResponse>();
 
 // Generate cache key for search parameters
 const generateCacheKey = (
-  params: PaginatedSearchParams | PaginatedSimilarParams,
+  params: PaginatedNeuralParams | PaginatedSimilarParams,
   type: "search" | "similar"
 ): string => {
   return `${type}-${JSON.stringify(params)}`;
@@ -159,7 +159,7 @@ const generateCacheKey = (
 
 // Paginated search function
 export const searchExaPaginated = async (
-  params: PaginatedSearchParams,
+  params: PaginatedNeuralParams,
   page: number = 1
 ): Promise<PaginatedExaSearchResponse> => {
   const cacheKey = generateCacheKey(params, "search");
