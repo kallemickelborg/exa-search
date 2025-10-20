@@ -47,7 +47,7 @@ export interface SearchParams {
   startPublishedDate?: string;
   endPublishedDate?: string;
   useAutoprompt?: boolean;
-  type?: 'neural' | 'keyword';
+  type?: "neural" | "keyword";
   category?: string;
   includeText?: boolean;
   textLength?: number;
@@ -59,15 +59,17 @@ export interface SimilarParams {
   numResults?: number;
   includeDomains?: string[];
   excludeDomains?: string[];
+  excludeText?: string[];
   startCrawlDate?: string;
   endCrawlDate?: string;
   startPublishedDate?: string;
   endPublishedDate?: string;
   category?: string;
+  excludeSameDomain?: boolean;
   page?: number;
 }
 
-export interface PaginatedSearchParams {
+export interface PaginatedNeuralParams {
   query: string;
   includeDomains?: string[];
   excludeDomains?: string[];
@@ -76,7 +78,7 @@ export interface PaginatedSearchParams {
   startPublishedDate?: string;
   endPublishedDate?: string;
   useAutoprompt?: boolean;
-  type?: 'neural' | 'keyword';
+  type?: "neural" | "keyword";
   category?: string;
   includeText?: boolean;
   textLength?: number;
@@ -86,11 +88,14 @@ export interface PaginatedSimilarParams {
   url: string;
   includeDomains?: string[];
   excludeDomains?: string[];
+  excludeText?: string[];
   startCrawlDate?: string;
   endCrawlDate?: string;
   startPublishedDate?: string;
   endPublishedDate?: string;
+  type?: "similar";
   category?: string;
+  excludeSameDomain?: boolean;
 }
 
 export interface PaginationMetadata {

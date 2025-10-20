@@ -53,7 +53,7 @@ cp .env.example .env
 4. Add your Exa API key to the `.env` file:
 
 ```
-VITE_EXA_API_KEY=your_actual_api_key_here
+EXA_API_KEY=your_actual_api_key_here
 ```
 
 5. Start the development server:
@@ -118,7 +118,7 @@ cp .env.example .env.local
 
 ```
 VITE_USE_DIRECT=true
-VITE_EXA_API_KEY=your_exa_api_key_here
+EXA_API_KEY=your_exa_api_key_here
 ```
 
 3. Start the development server:

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { BaseButton } from "@/components/buttons/BaseButton";
 import { ChevronLeft, ChevronRight, ChevronsLeft } from "lucide-react";
 
 interface PaginationProps {
@@ -49,7 +49,7 @@ export function Pagination({
 
   return (
     <div className="flex items-center justify-center space-x-2">
-      <Button
+      <BaseButton
         variant="outline"
         size="sm"
         onClick={() => onPageChange(1)}
@@ -57,9 +57,9 @@ export function Pagination({
         className="h-8 w-8 p-0"
       >
         <ChevronsLeft className="h-4 w-4" />
-      </Button>
+      </BaseButton>
 
-      <Button
+      <BaseButton
         variant="outline"
         size="sm"
         onClick={() => onPageChange(currentPage - 1)}
@@ -67,10 +67,10 @@ export function Pagination({
         className="h-8 w-8 p-0"
       >
         <ChevronLeft className="h-4 w-4" />
-      </Button>
+      </BaseButton>
 
       {visiblePages.map((page, index) => (
-        <Button
+        <BaseButton
           key={index}
           variant={page === currentPage ? "default" : "outline"}
           size="sm"
@@ -79,10 +79,10 @@ export function Pagination({
           className="h-8 min-w-8 px-2"
         >
           {page}
-        </Button>
+        </BaseButton>
       ))}
 
-      <Button
+      <BaseButton
         variant="outline"
         size="sm"
         onClick={() => onPageChange(currentPage + 1)}
@@ -90,7 +90,7 @@ export function Pagination({
         className="h-8 w-8 p-0"
       >
         <ChevronRight className="h-4 w-4" />
-      </Button>
+      </BaseButton>
     </div>
   );
 }

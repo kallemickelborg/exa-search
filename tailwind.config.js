@@ -2,10 +2,10 @@
 export default {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -17,16 +17,6 @@ export default {
       },
     },
     extend: {
-      width: {
-        'fill': 'fill-available',
-        'webkit-fill': '-webkit-fill-available',
-        'moz-fill': '-moz-available',
-      },
-      height: {
-        'fill': 'fill-available',
-        'webkit-fill': '-webkit-fill-available',
-        'moz-fill': '-moz-available',
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -84,4 +74,4 @@ export default {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

@@ -88,17 +88,33 @@ export const searchExa = async (
 export const findSimilar = async (
   params: SimilarParams
 ): Promise<ExaSimilarResponse> => {
+  // Extract domain from URL if excludeSameDomain is true
+  let excludeDomains = params.excludeDomains || [];
+
+  if (params.excludeSameDomain) {
+    try {
+      const urlObj = new URL(params.url);
+      const domain = urlObj.hostname;
+      excludeDomains = [...excludeDomains, domain];
+    } catch (e) {
+      console.warn("Invalid URL provided for excludeSameDomain:", params.url);
+    }
+  }
+
   const requestBody = {
     url: params.url,
     numResults: params.numResults || 10,
     includeDomains: params.includeDomains,
-    excludeDomains: params.excludeDomains,
+    excludeDomains: excludeDomains.length > 0 ? excludeDomains : undefined,
+    excludeText: params.excludeText,
     startCrawlDate: params.startCrawlDate,
     endCrawlDate: params.endCrawlDate,
     startPublishedDate: params.startPublishedDate,
     endPublishedDate: params.endPublishedDate,
     category: params.category,
   };
+
+  console.log("findSimilar request body:", requestBody);
 
   const url = USE_DIRECT
     ? `${EXA_API_BASE}/findSimilar`
